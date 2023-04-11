@@ -26,7 +26,7 @@ class SegmentWrapper(gym.ObservationWrapper):
             im_bgr = cv2.cvtColor(im_gray,cv2.COLOR_GRAY2BGR)
             masks = self.mask_generator.generate(im_bgr)
             for j in range(min(len(masks),self.nb_max_mask)):
-                mask_obs[j*4:(j+1)*4,i] = masks[j]["bbox"]
+                mask_obs[j*4:(j+1)*4][i] = masks[j]["bbox"]
         return mask_obs
 
 
@@ -43,6 +43,7 @@ def seed_env(env_id, rank, seed=0):
         env = gym.make(env_id)
         env.seed(seed + rank)
         env = AtariWrapper(env)
+        env = gym.wrappers.FrameStack(env,4)
         env = SegmentWrapper(env)
         return env
     set_random_seed(seed)
