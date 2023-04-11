@@ -9,7 +9,6 @@ import gym
 import numpy as np
 from stable_baselines3 import DQN
 
-print(stable_baselines3.__version__)
 class SegmentWrapper(gym.ObservationWrapper):
     def __init__(self, env, nb_max_mask=15):
         super().__init__(env)
