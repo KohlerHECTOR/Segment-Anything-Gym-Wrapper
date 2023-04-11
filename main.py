@@ -50,7 +50,7 @@ def seed_env(env_id, rank, seed=0):
     return _init
 
 
-num_cpu = 1
+num_cpu = 8
 # There already exists an environment generator that will make and wrap atari environments correctly.
 env = DummyVecEnv([seed_env('PongNoFrameskip-v4', i) for i in range(num_cpu)])
 model = DQN("MlpPolicy", env, verbose=1, learning_starts = 0)
