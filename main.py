@@ -49,11 +49,11 @@ def seed_env(env_id, rank, seed=0):
     return _init
 
 
-num_cpu = 4
+num_cpu = 1
 # There already exists an environment generator that will make and wrap atari environments correctly.
 env = DummyVecEnv([seed_env('PongNoFrameskip-v4', i) for i in range(num_cpu)])
 model = DQN("MlpPolicy", env, verbose=1, learning_starts = 0)
-model.learn(total_timesteps=100000, log_interval=4)
+model.learn(total_timesteps=100000, log_interval=1)
 model.save("segmented_pong_dqn")
 # s = env.reset()
 # done = False
