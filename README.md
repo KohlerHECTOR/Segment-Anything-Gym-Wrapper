@@ -11,3 +11,5 @@ bash install.sh
 ```bash
 python3 main.py
 ```
+#TODO
+- check alignment
