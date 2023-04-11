@@ -1,0 +1,2 @@
+stable_baselines3[extra]
+git+https://github.com/facebookresearch/segment-anything.git

@@ -9,10 +9,14 @@ import gym
 import numpy as np
 from stable_baselines3 import DQN
 
+print(stable_baselines3.__version__)
 class SegmentWrapper(gym.ObservationWrapper):
-    def __init__(self, env, mask_generator, nb_max_mask=15):
+    def __init__(self, env, nb_max_mask=15):
         super().__init__(env)
-        self.mask_generator = mask_generator
+        sam = sam_model_registry["vit_b"](checkpoint="models/superlight_model.pth") #76 sec per inf
+        # sam = sam_model_registry["default"](checkpoint="full_model.pth") #100 sec per inf
+        # sam = sam_model_registry["vit_l"](checkpoint="light_model.pth") #90 sec per inf # BBAAAAAAAAD
+        self.mask_generator = SamAutomaticMaskGenerator(sam)
         self.nb_max_mask = nb_max_mask
         self.observation_space = gym.spaces.Box(shape=(4 * self.nb_max_mask, 4), low=0, high=84)
 
@@ -25,16 +29,9 @@ class SegmentWrapper(gym.ObservationWrapper):
             for j in range(min(len(masks),self.nb_max_mask)):
                 mask_obs[j*4:(j+1)*4,i] = masks[j]["bbox"]
         return mask_obs
-#
-# class ArrayAction(gym.ActionWrapper):
-#     def __init__(self, env):
-#         super().__init__(env)
-#
-#     def action(self, act):
-#         return [act]
 
 
-def seed_env(env, rank, seed=0):
+def seed_env(env_id, rank, seed=0):
     """
     Utility function for multiprocessed env.
 
@@ -44,22 +41,18 @@ def seed_env(env, rank, seed=0):
     :param rank: (int) index of the subprocess
     """
     def _init():
+        env = gym.make(env_id)
         env.seed(seed + rank)
+        env = AtariWrapper(env)
+        env = SegmentWrapper(env)
         return env
     set_random_seed(seed)
     return _init
 
-sam = sam_model_registry["vit_b"](checkpoint="models/superlight_model.pth") #76 sec per inf
-# sam = sam_model_registry["default"](checkpoint="full_model.pth") #100 sec per inf
-# sam = sam_model_registry["vit_l"](checkpoint="light_model.pth") #90 sec per inf # BBAAAAAAAAD
+
 num_cpu = 4
-mask_generator = SamAutomaticMaskGenerator(sam)
 # There already exists an environment generator that will make and wrap atari environments correctly.
-env = gym.make('PongNoFrameskip-v4')
-env = AtariWrapper(env)
-env = gym.wrappers.FrameStack(env, 4)
-env = SegmentWrapper(env, mask_generator)
-env = DummyVecEnv([seed_env(env, i) for i in range(num_cpu)])
+env = DummyVecEnv([seed_env('PongNoFrameskip-v4', i) for i in range(num_cpu)])
 model = DQN("MlpPolicy", env, verbose=1, learning_starts = 0)
 model.learn(total_timesteps=100000, log_interval=4)
 model.save("segmented_pong_dqn")
