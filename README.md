@@ -1,14 +1,14 @@
 *Requires Python3.8*
-```bash
+```source
 virutalenv -p /usr/bin/python3.8 venv
 ```
-```bash
+```source
 source venv/bin/activate
 ```
-```bash
+```source
 bash install.sh
 ```
-```bash
+```source
 python3 main.py
 ```
 #TODO
