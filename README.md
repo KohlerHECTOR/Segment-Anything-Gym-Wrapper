@@ -13,3 +13,7 @@ python3 main.py
 ```
 #TODO
 - check alignment
+- learn DTP with max depth
+- get sam on GPU
+- get abstraction inside DQN (part of NN)
+- try Monet and Marionet
