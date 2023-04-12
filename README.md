@@ -1,4 +1,4 @@
-# Install 
+# Install
 *Requires Python3.8*
 ```bash
 virutalenv -p /usr/bin/python3.8 venv
@@ -18,3 +18,4 @@ python3 main.py
 - get sam on GPU
 - get abstraction inside DQN (part of NN)
 - try Monet and Marionet
+- Marionet dataset atari
