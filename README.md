@@ -1,17 +1,17 @@
 *Requires Python3.8*
-```source
+```bash
 virutalenv -p /usr/bin/python3.8 venv
 ```
-```source
+```bash
 source venv/bin/activate
 ```
-```source
+```bash
 bash install.sh
 ```
-```source
+```bash
 python3 main.py
 ```
-#TODO
+# TODO
 - check alignment
 - learn DTP with max depth
 - get sam on GPU
